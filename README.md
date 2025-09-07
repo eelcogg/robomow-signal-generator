@@ -32,7 +32,7 @@ To understand how the original Robomow base station worked, I connected a **5 Ω
 
 Here is the original Robomow boundary signal:  
 
-![Original signal](docs/original-signal.png)  
+![Original signal](docs/oem_signal.png)  
 
 ### Signal Processing
 Once I captured the waveform, I exported it from the oscilloscope as a **CSV file**. Using a Python script, I:  
