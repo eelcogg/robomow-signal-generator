@@ -1,7 +1,7 @@
 #include "waveform.h"   // WAVEFORM_LEN, waveform[]
 #include "driver/i2s.h"
 #include <stdint.h>
-//#include <string.h>
+#include <string.h>
 
 // ===== Choose your rate =====
 constexpr int    SAMPLE_RATE = 384000;      // try 192000, 256000, 384000, 480000
