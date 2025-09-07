@@ -10,6 +10,7 @@ I found these same mowers also sold under other brands:
 - Robomow RT → also sold as **Black & Decker BCMW123**  
 
 These models are simple badge-engineered versions with different colors and covers, but internally they are identical. This project applies to all of them.
+
 If you find this project useful and want to support more reverse-engineering of these great little mowers, you can [buy me a coffee](https://www.buymeacoffee.com/eelcogg). ☕
 
 ---
@@ -35,8 +36,9 @@ Changing the dummy resistor to 10 Ω doubled the amplitude. This means the gener
 I think we can conclude that the base station is trying to push **150–200 mArms** through the boundary wire loop.
 
 Here is the original Robomow boundary signal for the 5 Ω dummy resistor:
-
-![Original signal](docs/oem_signal.png)  
+<p align="center">
+<img src="docs/oem_signal.png" alt="Original signal" width="500"/>
+</p>
 
 ### Signal Processing
 Once I captured the waveform, I exported it from the oscilloscope as a **CSV file**. Using a Python script, I:  
@@ -48,7 +50,10 @@ Once I captured the waveform, I exported it from the oscilloscope as a **CSV fil
 There is some frequency variation from the original generator. I averaged the frequency to 3007.4825Hz.
 Here is the processed waveform:  
 
-![Processed signal](docs/processed_signal.png)  
+<p align="center">
+<img src="docs/processed_signal.png" alt="Processed signal" width="500"/>
+</p>
+
 
 ### Preparing for the ESP32 DAC
 To make the signal suitable for the ESP32 DAC, I:  
@@ -60,7 +65,9 @@ The ESP32 then continuously outputs this array through its DAC, amplified by the
 
 Here is the recreated signal on channel 1, overlaid on the original signal on channel 2. As you can see **it's a perfect match!**  
 
-![Recreated signal](docs/matched_signal.png)  
+<p align="center">
+<img src="docs/matched_signal.png" alt="matched signal" width="500"/>
+</p>
 
 
 ## 🛠️ Hardware
@@ -70,7 +77,11 @@ Here is the recreated signal on channel 1, overlaid on the original signal on ch
 - Boundary wire loop (standard garden robot setup)
 
 ## ✅ Testing & Results
-For testing, I laid out a temporary loop of wire about 1.5 meters in diameter, secured to the ground with pegs. The ends of the loop were connected to the LM386 amplifier, and I adjusted the volume until I measured roughly **125 mArms** of loop current.  
+For testing, I laid out a temporary loop of wire about 1.5 meters in diameter, secured to the ground with pegs. The ends of the loop were connected to the LM386 amplifier, and I adjusted the volume until I measured roughly **125 mArms** of loop current.
+
+<p align="center">
+<img src="docs/hardware.jpg" alt="Test setup outside" width="500"/>
+</p>
 
 Then came the fun part: I placed my trusty **Robomow RT300** inside the loop and pressed the *Go Home* button.  
 
@@ -119,7 +130,7 @@ The RX and RT models are fairly “dumb” compared to Robomow’s high-end mowe
 Pull requests are very welcome.  
 If you want to improve the code, add features, adapt it on other mowers,... go for it.  
 
-Feel free to fork or copy the whole project if it is useful to you. All I ask is a bit of recognition back.  
+Feel free to fork or copy the whole project if it is useful to you. All I ask is a bit of recognition and some [coffee](https://www.buymeacoffee.com/eelcogg).  
 
 ---
 
