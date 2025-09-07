@@ -77,7 +77,12 @@ Then came the fun part: I placed my trusty **Robomow RT300** inside the loop and
 **It worked! 🎉**  
 The mower immediately started following the wire, circling endlessly since there was no base station to stop it. Even better, it would also happily mow the patch of grass contained inside this small loop, proving that the signal was strong and stable enough for real mowing.  
 
-Flipping the polarity of the wire connection turned the loop into a **keep-out zone** instead of a mowing area. This feature will be very useful for creating temporary boundaries, for example to protect newly seeded patches of grass or sensitive areas in the garden.  
+Flipping the polarity of the wire connection turned the loop into a **keep-out zone** instead of a mowing area. This feature will be very useful for creating temporary boundaries, for example to protect newly seeded patches of grass or sensitive areas in the garden. 
+
+Here’s a short video of the RT300 driving around the test loop:
+
+[![Mower test video](https://img.youtube.com/vi/UxCwS0zmPOU/0.jpg)](https://www.youtube.com/watch?v=UxCwS0zmPOU)
+
 
 
 ## 💻 Software
