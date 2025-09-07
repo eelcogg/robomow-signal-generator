@@ -76,6 +76,10 @@ Here is the recreated signal on channel 1, overlaid on the original signal on ch
 - ~7 Ω resistor in series with the boundary wire loop (keeps the LM386 happy with its output impedance)  
 - Boundary wire loop (standard garden robot setup)
 
+<p align="center">
+<img src="docs/fake_fritzing.png" alt="Hardware setup" width="500"/>
+</p>
+
 ## ✅ Testing & Results
 For testing, I laid out a temporary loop of wire about 1.5 meters in diameter, secured to the ground with pegs. The ends of the loop were connected to the LM386 amplifier, and I adjusted the volume until I measured roughly **125 mArms** of loop current.
 
