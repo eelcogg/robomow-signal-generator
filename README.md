@@ -14,7 +14,7 @@ These models are simple badge-engineered versions with different colors and cove
 ---
 
 ## 🔍 Motivation
-I kept noticing used Robomow mowers for sale on my local marketplace. They were cheap, often sold for next to nothing when only needing minor repairs, but nearly all of them were missing the base station that generates the boundary wire signal. These mowers need a boundary wire to nagivate the yard and find their way back to the base station for charging, so without the wire signal generator, the mower is useless.
+I kept noticing used Robomow mowers for sale on my local marketplace. They were often sold for next to nothing when only needing minor repairs, but nearly all of them were missing the base station that generates the boundary wire signal. These mowers need a boundary wire to nagivate the yard and find their way back to the base station for charging, so without the wire signal generator, the mower is useless.
 
 When I looked into buying replacements, the prices were shocking. A charging head costs around €150, a simple wheel motor €125, and a main board €175. That is more than half the cost of a brand new mower. For the entry-level RX and RT models, it just isn’t economical to buy OEM parts.
 
@@ -43,7 +43,7 @@ Once I captured the waveform, I exported it from the oscilloscope as a **CSV fil
 
 Here is the processed waveform:  
 
-![Processed signal](docs/processed-signal.png)  
+![Processed signal](docs/processed_signal.png)  
 
 ### Preparing for the ESP32 DAC
 To make the signal suitable for the ESP32 DAC, I:  
@@ -53,22 +53,21 @@ To make the signal suitable for the ESP32 DAC, I:
 
 The ESP32 then continuously outputs this array through its DAC, amplified by the LM386, to recreate the boundary wire signal.  
 
-Here is the recreated signal:  
+Here is the recreated signal on channel one, overlaid on the original signal on channel 2:  
 
-![Recreated signal](docs/recreated-signal.png)  
+![Recreated signal](docs/matched_signal.png)  
 
-And here are the two signals overlaid for comparison:  
+Some quantization of the DAC is visible when we zoom all the way in:  
 
-![Overlay signal](docs/overlay-signal.png)  
-
-The recreated waveform is close enough that the mower behaves exactly as it would with the OEM base station.
-
+![Overlay signal](docs/matched_signal_zoom.png)  
 
 ## 🛠️ Hardware
 - ESP32 development board  
 - LM386 audio amplifier module (cheap, widely available)  
 - ~7 Ω resistor in series with the boundary wire loop (keeps the LM386 happy with its output impedance)  
 - Boundary wire loop (standard garden robot setup)
+
+I adjusted the volume on the LM386 module to match the current through the wire. I noticed my LM386 is operating close to it's maximum output capability and a beefier output stage is needed in the future.
 
 **Notes on boundary wire:**  
 For testing, I used standard 230 V installation wire (2.5 mm²). Any wire works perfectly well for experiments, but for permanent installation in the garden I do **not** recommend the thin wire that often comes with these robots. It is flimsy and easily damaged once buried (ask me how I know 😅). A much better option is to switch to the stronger **shielded boundary wire**, which is more durable and reliable. 
