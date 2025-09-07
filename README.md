@@ -94,6 +94,10 @@ Here’s a short video of the RT300 driving around the test loop:
 
 [![Mower test video](https://img.youtube.com/vi/UxCwS0zmPOU/0.jpg)](https://www.youtube.com/watch?v=UxCwS0zmPOU)
 
+And here it is mowing inside the loop:
+[![Mower test video](https://img.youtube.com/vi/wo3PFFE6uOs/0.jpg)](https://www.youtube.com/watch?v=wo3PFFE6uOs)
+
+
 
 
 ## 💻 Software
