@@ -10,6 +10,7 @@ I found these same mowers also sold under other brands:
 - Robomow RT → also sold as **Black & Decker BCMW123**  
 
 These models are simple badge-engineered versions with different colors and covers, but internally they are identical. This project applies to all of them.
+If you find this project useful and want to support more reverse-engineering of these great little mowers, you can [buy me a coffee](https://www.buymeacoffee.com/eelcogg). ☕
 
 ---
 
@@ -27,10 +28,13 @@ Using the ESP32’s DAC output and a simple LM386 amplifier, I managed to inject
 To understand how the original Robomow base station worked, I connected a **5 Ω dummy resistor** across the output terminals. With my oscilloscope across the resistor, I observed the following:  
 
 - Signal frequency: a little over **3 kHz**  
-- Amplitude: about **2 Vpp** and **868 mVrms**  
-- This corresponds to roughly **150–200 mA** flowing in the boundary wire loop  
+- Amplitude: about **2 Vpp**
 
-Here is the original Robomow boundary signal:  
+Changing the dummy resistor to 10 Ω doubled the amplitude. This means the generator is probably trying to push a constant current through the loop. This makes sense because loop current determines the magnetic field strength.
+
+I think we can conclude that the base station is trying to push **150–200 mArms** through the boundary wire loop.
+
+Here is the original Robomow boundary signal for the 5 Ω dummy resistor:
 
 ![Original signal](docs/oem_signal.png)  
 
@@ -41,6 +45,7 @@ Once I captured the waveform, I exported it from the oscilloscope as a **CSV fil
 3. Calculated the RMS value for verification  
 4. Plotted the cleaned signal  
 
+There is some frequency variation from the original generator. I averaged the frequency to 3007.4825Hz.
 Here is the processed waveform:  
 
 ![Processed signal](docs/processed_signal.png)  
@@ -53,13 +58,10 @@ To make the signal suitable for the ESP32 DAC, I:
 
 The ESP32 then continuously outputs this array through its DAC, amplified by the LM386, to recreate the boundary wire signal.  
 
-Here is the recreated signal on channel one, overlaid on the original signal on channel 2:  
+Here is the recreated signal on channel 1, overlaid on the original signal on channel 2. As you can see **it's a perfect match!**  
 
 ![Recreated signal](docs/matched_signal.png)  
 
-Some quantization of the DAC is visible when we zoom all the way in:  
-
-![Overlay signal](docs/matched_signal_zoom.png)  
 
 ## 🛠️ Hardware
 - ESP32 development board  
@@ -67,52 +69,32 @@ Some quantization of the DAC is visible when we zoom all the way in:
 - ~7 Ω resistor in series with the boundary wire loop (keeps the LM386 happy with its output impedance)  
 - Boundary wire loop (standard garden robot setup)
 
-I adjusted the volume on the LM386 module to match the current through the wire. I noticed my LM386 is operating close to it's maximum output capability and a beefier output stage is needed in the future.
+## ✅ Testing & Results
+For testing, I laid out a temporary loop of wire about 1.5 meters in diameter, secured to the ground with pegs. The ends of the loop were connected to the LM386 amplifier, and I adjusted the volume until I measured roughly **125 mArms** of loop current.  
 
-**Notes on boundary wire:**  
-For testing, I used standard 230 V installation wire (2.5 mm²). Any wire works perfectly well for experiments, but for permanent installation in the garden I do **not** recommend the thin wire that often comes with these robots. It is flimsy and easily damaged once buried (ask me how I know 😅). A much better option is to switch to the stronger **shielded boundary wire**, which is more durable and reliable. 
+Then came the fun part: I placed my trusty **Robomow RT300** inside the loop and pressed the *Go Home* button.  
 
+**It worked! 🎉**  
+The mower immediately started following the wire, circling endlessly since there was no base station to stop it. Even better, it would also happily mow the patch of grass contained inside this small loop, proving that the signal was strong and stable enough for real mowing.  
 
-**Setup:**  
-ESP32 DAC output → LM386 amplifier → resistor → boundary wire  
+Flipping the polarity of the wire connection turned the loop into a **keep-out zone** instead of a mowing area. This feature will be very useful for creating temporary boundaries, for example to protect newly seeded patches of grass or sensitive areas in the garden.  
 
-**Circuit schematic:**  
-![schematic](hardware/schematic.png)  
-
----
 
 ## 💻 Software
-The ESP32 code generates the required waveform using the onboard DAC.  
+The ESP32 code reproduces the waveform using its onboard DAC. It's now set for continuous output. Once combined with the mower battery charger, I will implement On-Off. 
+Parts of this project’s code were written with the help of ChatGPT.  
+I am not a professional programmer, so the implementation may not be perfect.  
+I welcome contributions from more experienced developers to improve efficiency, structure, and functionality.  
+Source code lives in [`/src`](src/). 
 
-Features:  
-- Adjustable frequency and duty cycle  
-- Polarity flip in software, which creates keep-out zones inside the mowing area  
-- Simple structure, easy to extend  
-
-Source code lives in [`/src`](src/).  
-
----
-
-## 🧩 Dependencies
-This project was developed and tested with the following setup:
+This project was developed with the following setup:
 
 - Arduino IDE **2.3.6**  
 - ESP32 Board Library **3.3.0** (by Espressif Systems)  
-- Core libraries used:  
-  - `driver/i2s.h` (part of the ESP32 Arduino core)  
-  - `<stdint.h>` and `<string.h>` (standard C libraries, included by default)  
-
-⚠️ Future versions of the ESP32 board library may change APIs.  
-If you run into issues, try matching the versions listed above.  
 
 ---
 
-## ✅ Results
-- Robot successfully follows the generated boundary wire  
-- Flipped polarity creates exclusion zones that the robot avoids  
-- Tested successfully on multiple secondhand **Robomow RX and RT series** mowers (also Wolf Garten Loopo S and Black & Decker BCMW123)  
 
----
 
 ## 🌱 Where this is going
 Right now this project is only a signal generator, but the real goal is to **combine it with a charger** so the system behaves like an original base station:  
@@ -123,33 +105,16 @@ Right now this project is only a signal generator, but the real goal is to **com
 
 This approach saves power and reduces unnecessary EMI, since the boundary signal doesn’t need to radiate 24/7.  
 
-The RX and RT models are fairly “dumb” compared to Robomow’s high-end mowers. They don’t have scheduling or smart features (except Bluetooth on some versions). I am currently also building a **Wi-Fi module** so these mowers can be integrated into **Home Assistant**. That project will live in another repository — stay tuned.  
+The RX and RT models are fairly “dumb” compared to Robomow’s high-end mowers. They don’t have extended smart features (except for setting the mowing schedule via Bluetooth on some versions). I am currently building a **Wi-Fi module** so these mowers can be integrated into **Home Assistant**. That project will live in another repository, stay tuned.  
 
 ---
 
-## 🤖 About the Code
-Parts of this project’s code were written with the help of ChatGPT.  
-I am not a professional programmer, so the implementation may not be perfect.  
-
-I welcome contributions from more experienced developers to improve efficiency, structure, and functionality.  
-
----
 
 ## 🤝 Contributing and Support
 Pull requests are very welcome.  
-If you want to improve the code, add features, or even port it to other mower brands, go for it.  
+If you want to improve the code, add features, adapt it on other mowers,... go for it.  
 
 Feel free to fork or copy the whole project if it is useful to you. All I ask is a bit of recognition back.  
-
-If you would like to support further reverse engineering of these great little mowers, you can [buy me a coffee](https://www.buymeacoffee.com/YOURNAME). ☕  
-
----
-
-## 📚 Future Work
-- Combine signal generator and charger into one unit  
-- Add Wi-Fi or a web interface for dynamic zone configuration  
-- Replace LM386 breadboard module with a small dedicated PCB  
-- Explore compatibility with other mower brands  
 
 ---
 
@@ -162,4 +127,3 @@ Use at your own risk. Not suitable for commercial or safety-critical use.
 ## 📜 License
 MIT License – do whatever you like, just give credit and do not blame me if your mower goes rogue.  
 
-If you would like to support further r
